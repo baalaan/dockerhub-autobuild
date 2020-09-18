@@ -72,6 +72,34 @@ Dockerfile should like:
 
 > RUN cat /proc/version > image_version
 
+> RUN echo "This is stage1" >> image_version
+
+Build the image
+
+> docker build -t from:demo
+
+Run a container and check the contents of the `image_version` file.
+
+> docker run -it from:demo
+
+> root@58aaa5577ee1:/# cat /image_version
+
+> Linux version 5.4.0-47-generic (buildd@lcy01-amd64-014) (gcc version 9.3.0 (Ubuntu 9.3.0-10ubuntu2)) #51-Ubuntu SMP Fri Sep 4 19:50:52 UTC 2020
+
+>This is stage1
+
+
+
+**Scenario 3 - How does FROM multi stage works?**
+
+Dockerfile should like:
+
+> FROM ubuntu:trusty AS stage1
+
+> RUN cat /proc/version > image_version
+
+> RUN echo "This is stage1" >> image_version
+
 > FROM alpine:3.12
 
 > COPY --from=stage1 /image_version .
@@ -82,13 +110,39 @@ We are using the `base image` of `ubuntu:trusty` and we name our build stage `AS
 
 reference the build stage in the subsequent `FROM` instruction.
 
-Using the `RUN` command we `cat` the contents of `/proc/version` file to file `image_version` which is 
-
-going to be placed in our root directory.
-
-
 Now in the 2nd stage we are using a much smaller image `FROM alpine:3.12` to which we will copy the `image_version` file.
 
 Using the `COPY` command and `--from=stage1` flag we specify the name of stage1 and then we specify the path where this file can be found 
 
 `/image_version` in our stage1 and we copy it to our current `.` directory in stage2 which is root directory `/`.
+
+Build the image (name it `demo2` or something different than what you named your image in the Scenario 2)
+
+> docker build -t from:demo2 .
+
+Run a container based on the image, once you are in the container check the contents of the /image_version file.
+
+> docker run -it from:demo2
+
+> / # cat /image_version
+
+> Linux version 5.4.0-47-generic (buildd@lcy01-amd64-014) (gcc version 9.3.0 (Ubuntu 9.3.0-10ubuntu2)) #51-Ubuntu SMP Fri Sep 4 19:50:52 UTC 2020
+
+> This is stage1
+
+> / # ls -la | grep image_version
+
+> -rw-r--r--    1 root     root           144 Sep 18 13:50 image_version
+
+As you can see file was copied to our `from:demo2` image from which we launched a container. The image is much smaller in size compared to our **Scenario 2** image `from:demo`.
+
+**Check the size of the images `docker images`**
+
+> REPOSITORY                  TAG                 IMAGE ID            CREATED             SIZE
+
+> from                        demo2               f011560b0324        6 minutes ago       5.57MB
+
+> from                        demo                634cde703a8f        9 minutes ago       197MB
+
+
+#WORK IN PROGRESS#
