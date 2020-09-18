@@ -1,3 +1,4 @@
+# Pull the base image
 FROM ubuntu:trusty
 
 # Scenario 1 - CMD shell form
