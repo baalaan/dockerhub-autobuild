@@ -12,4 +12,12 @@ Contains a Dockerfile with a very basic Ubuntu image and with the help of the RE
 
 You are encouraged to experiment with your own variations!
 
+**ARGvsFROMvsRUN** -- work in progress
+Contains a Dockerfile with some basic Ubuntu image and with the help of the README.md instructions, it guides the user to understand 
+
+the usage of `ARG`, `FROM` and `RUN`.
+
+> `ARG` and `FROM` in multi-stage and `RUN` commands in a Dockerfile.
+
+
 Good luck!
