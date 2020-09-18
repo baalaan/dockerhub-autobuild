@@ -1,6 +1,6 @@
-##**What's the deal with _FROM_ and _RUN_ in a Dockerfile?**##
+**What's the deal with _ARG_,_FROM_ and _RUN_ in a Dockerfile?**
 
-##**FROM**##
+**FROM**
 
 `FROM` instruction initializes a new build stage and sets the `Base Image` for subsequent instructions.
 
