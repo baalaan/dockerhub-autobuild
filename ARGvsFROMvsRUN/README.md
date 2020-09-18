@@ -30,6 +30,9 @@ Run a container based on the image. (`-it` option brings up an interactive termi
 Check the file image_version inside the container
 
 > root@4c533ebe3586:/# cat /image_version
+
+Result is the value we assigned to variable `VERSION` which we then echoed to image_version file.
+
 > trusty
 
 An `ARG` declared before a `FROM` is _outside of a build stage_, so it _can’t be used in any instruction after a `FROM`_ **UNLESS** we use an ARG instruction without a value inside of a build stage which in our case is the 2nd declaration of `ARG` in our Dockerfile.
