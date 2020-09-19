@@ -145,4 +145,57 @@ As you can see file was copied to our `from:demo2` image from which we launched 
 > from                        demo                634cde703a8f        9 minutes ago       197MB
 
 
-#WORK IN PROGRESS#
+
+**Scenario 4 - What about the RUN instruction?**
+
+RUN has 2 forms 
+
+> exec form: RUN _["executable", "param1", "param2"]_
+
+> shell form: RUN _command_ the command is run in a shell _/bin/sh -c_ on Linux and _cmd /S /C_ on Windows.
+
+RUN instruction will execute commands in a new layer on top of the image used and commit the results. The resulting image is used for the next step in the `Dockerfile`.
+
+Let's take a quick look at our `Dockerfile` example to better understand how layering works. Each instruction below is creating a layer.
+
+To better explore the layers of an image you can use this awesome tool called [Dive](https://github.com/wagoodman/dive) or you can also explore the layers on image by running `docker image inspect <nameoftheimage>` and at the bottom under `RootFS` you will see section `Layers`
+
+Dockerfile should like:
+
+> FROM ubuntu:trusty AS stage1
+
+> RUN cat /proc/version > image_version
+
+> RUN echo "This is stage1" >> image_version 
+
+
+The first instruction alone creates a 3xlayers from the ubuntu:trusty Docker image.
+
+The second nstruction uses concatenate to print the contents of /proc/version file and pushes this value to a new file called image_version. This creates another layer.
+
+The third instruction uses echo command to append some text at the bottom of the already created image_version file. This creates another layer. Our image will end up with 5 layers. We could reduce the number of layers by modifying the Dockerfile to
+
+> FROM ubuntu:trusty AS stage1
+
+> RUN cat /proc/version > image_version && echo "This is stage1" >> image_version 
+
+Our image will end up with 4 layers now. Layering RUN instructions and generating commits conforms to the core concepts of Docker where commits are cheap and containers can be created from any point in an image’s history.
+
+The `exec` form of the `RUN` instruction allows to run commands using a base image that does not contain the specified shell executable.
+
+To use a different shell, other than ‘/bin/sh’, use the exec form passing in the desired shell.Unlike the shell form, the exec form does not invoke a command shell. This means that normal shell processing does not happen.
+
+> RUN ["/bin/bash","-c","echo Hello"]
+
+In the `shell` form you can use a `\ (backslash)` to continue a single RUN instruction onto the next line. For example:
+
+> RUN cat /proc/version > image_version && \
+echo "This is stage1" >> image_version
+
+This is equivalent to 
+
+> RUN cat /proc/version > image_version && echo "This is stage1" >> image_version
+
+
+
+
