@@ -171,7 +171,7 @@ Dockerfile should like:
 
 The first instruction alone creates a 3xlayers from the ubuntu:trusty Docker image.
 
-The second nstruction uses concatenate to print the contents of /proc/version file and pushes this value to a new file called image_version. This creates another layer.
+The second instruction uses concatenate to print the contents of /proc/version file and pushes this value to a new file called image_version. This creates another layer.
 
 The third instruction uses echo command to append some text at the bottom of the already created image_version file. This creates another layer. Our image will end up with 5 layers. We could reduce the number of layers by modifying the Dockerfile to
 
@@ -189,7 +189,7 @@ To use a different shell, other than ‘/bin/sh’, use the exec form passing in
 
 In the `shell` form you can use a `\ (backslash)` to continue a single RUN instruction onto the next line. For example:
 
-> RUN cat /proc/version > image_version && \
+> RUN cat /proc/version > image_version && `\`
 echo "This is stage1" >> image_version
 
 This is equivalent to 
